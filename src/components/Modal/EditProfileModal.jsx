@@ -47,6 +47,7 @@ const EditProfileModal = ({ onClose, open }) => {
     setEmailError(false);
     setImages([]);
   };
+
   const editProfile = async () => {
     setLoading(true);
     setUsernameError(false);
