@@ -11,7 +11,6 @@ const initialState = {
 export const fetchReservations = createAsyncThunk(
   "reservations/fetchReservations",
   async ({ offset, valid, sort, search }) => {
-    console.log(search);
     const request = await apiClient.get(
       `/reservations/all?${sort ? `&sort=${sort}` : ""}&offset=${offset}${
         valid != null ? `&valid=${valid}` : "&valid=all"

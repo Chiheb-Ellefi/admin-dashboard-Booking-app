@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
-import { Users, Home, CalendarDays, Flag } from "lucide-react";
+import { Users, Home, CalendarDays, Flag, LayoutDashboard } from "lucide-react";
 import SidebarItem from "../components/Sidebar/SidebarItem";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -19,6 +19,11 @@ const MainLayout = () => {
             setOpen={setOpen}
             setConfirmLogout={setConfirmLogout}
           >
+            <SidebarItem
+              icon={<LayoutDashboard />}
+              text={"Dashboard"}
+              path="/"
+            />
             <SidebarItem icon={<Users />} text={"Users"} path="/users" />
             <SidebarItem icon={<Home />} text={"Rooms"} path="/rooms" />
             <SidebarItem

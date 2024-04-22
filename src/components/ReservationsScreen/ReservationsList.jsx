@@ -1,7 +1,7 @@
 import ReservationsListItem from "./ReservationsListItem";
 import { useState } from "react";
 import { X } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BounceLoader from "react-spinners/BounceLoader";
 import {
   cancelReservation,
@@ -12,6 +12,7 @@ const ReservationsList = ({ reservations }) => {
   const [selectedList, setSelectedList] = useState([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const deleteList = () => {
     setLoading(true);
     selectedList.map((item) => {
@@ -39,7 +40,7 @@ const ReservationsList = ({ reservations }) => {
       dispatch(
         cancelReservation({
           res_id: item.split(":")[0],
-          data: { room_id: item.split(":")[1] },
+          data: { room_id: item.split(":")[1], user_id: user.user_id },
         })
       ).then(() => {
         dispatch(

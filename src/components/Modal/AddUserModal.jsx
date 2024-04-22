@@ -38,7 +38,15 @@ const AddUserModal = ({ loading, onClose, open }) => {
     dispatch(createUser(user)).then((result) => {
       if (result.payload) {
         toast.success(`User was created successfully!`);
-        dispatch(fetchUsers());
+        dispatch(
+          fetchUsers({
+            offset: 0,
+            limit: 10,
+            sort: null,
+            filter: "",
+            search: "",
+          })
+        );
         onClose();
         setUser({
           email: "",
@@ -62,6 +70,7 @@ const AddUserModal = ({ loading, onClose, open }) => {
         setUsernameError(false);
         setPasswordError(false);
         setEmailError(false);
+        setShowPassword(false);
       }}
       open={open}
     >
@@ -185,6 +194,7 @@ const AddUserModal = ({ loading, onClose, open }) => {
                   setUsernameError(false);
                   setPasswordError(false);
                   setEmailError(false);
+                  setShowPassword(false);
                 }}
               >
                 Cancel
@@ -193,6 +203,7 @@ const AddUserModal = ({ loading, onClose, open }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   createNewUser();
+                  setShowPassword(false);
                 }}
                 className={`btn w-36 ${
                   loading

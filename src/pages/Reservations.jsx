@@ -9,7 +9,6 @@ const Reservations = () => {
   const { data, loading, nbrRes } = useSelector((state) => state.reservations);
   const [isSearch, setIsSearch] = useState(false);
   const [search, setSearch] = useState("");
-
   const [filter, setFilter] = useState(false);
   const [selected, setSelected] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -150,6 +149,7 @@ const Reservations = () => {
       ) : (
         <>
           <ReservationsList reservations={data} />
+
           <div className="mb-4">
             <Pagination
               className="pagination-bar"

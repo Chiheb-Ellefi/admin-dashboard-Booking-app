@@ -15,13 +15,14 @@ import usersReducer from "./features/UsersSlice";
 import roomsReducer from "./features/RoomsSlice";
 import reservationsReducer from "./features/ReservationsSlice";
 import reportsReducer from "./features/ReportsSlice";
-
+import dashboardReducer from "./features/DashboardSlice";
 const reducer = combineReducers({
   auth: authReducer,
   users: usersReducer,
   rooms: roomsReducer,
   reservations: reservationsReducer,
   reports: reportsReducer,
+  dashboard: dashboardReducer,
 });
 const persistConfig = {
   key: "root",

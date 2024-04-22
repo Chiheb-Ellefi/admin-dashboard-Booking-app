@@ -2,21 +2,34 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import apiClient from "../../api/ApiClient";
 import axios from "axios";
+
 const initialState = {
   loading: false,
   data: [],
+  count: 0,
   error: null,
 };
 
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const request = await apiClient.get("/users");
-  const response = request.data;
-  return response;
-});
+export const fetchUsers = createAsyncThunk(
+  "users/fetchUsers",
+  async ({ offset, limit, search, sort, filter }) => {
+    const request = await apiClient.get(
+      `/users?offset=${offset}&limit=${limit}${
+        sort != null ? `&sort=${sort}` : "&sort=A-Z"
+      }${search != "" ? `&search=${search}` : ""}${
+        filter != "" ? `&filter=${filter}` : ""
+      }`
+    );
+
+    const response = request.data;
+
+    return response;
+  }
+);
 export const toggleUser = createAsyncThunk("users/toggleUser", async (data) => {
   const request = await apiClient.patch("/user/toggle", data);
   const response = request.data;
-  console.log(request.data);
+
   return response;
 });
 export const createUser = createAsyncThunk("users/createUser", async (data) => {
@@ -30,7 +43,7 @@ export const deleteUser = createAsyncThunk(
   async ({ user_id }) => {
     const request = await apiClient.delete(`/user/${user_id}`);
     const response = request.data;
-    console.log(response);
+
     return response;
   }
 );
@@ -63,7 +76,8 @@ const usersSlice = createSlice({
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
       state.loading = false;
-      state.data = action.payload;
+      state.data = action.payload.users;
+      state.count = action.payload.count;
       state.error = null;
     });
     builder.addCase(fetchUsers.rejected, (state, action) => {

@@ -15,18 +15,36 @@ import NotFound from "../pages/NotFound";
 import { useSelector } from "react-redux";
 import Reservations from "../pages/Reservations";
 import Reports from "../pages/Reports";
+import BounceLoader from "react-spinners/BounceLoader";
+import Dashboard from "../pages/Dashboard";
 const Router = () => {
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isLoggedIn, loading } = useSelector((state) => state.auth);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
         <Route
           path="/login"
-          element={!isLoggedIn ? <SignIn /> : <Navigate to="/users" replace />}
+          element={
+            !isLoggedIn ? (
+              <SignIn />
+            ) : !loading ? (
+              <Navigate to="/" replace />
+            ) : (
+              <div className="h-screen w-screen flex justify-center items-center">
+                <BounceLoader
+                  color="red"
+                  loading={loading}
+                  size={100}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+              </div>
+            )
+          }
         />
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<Navigate to="/users" replace />} />
+            <Route index element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
             <Route path="/rooms" element={<Rooms />} />
             <Route path="/reservations" element={<Reservations />} />

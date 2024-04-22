@@ -17,9 +17,17 @@ const UsersListItem = ({ user }) => {
     dispatch(toggleUser(data)).then((result) => {
       if (result.payload) {
         toast.success(
-          `User with id ${user.user_id} was ${active ? "disabled" : "enabled"}!`
+          `User with id ${user.user_id} was ${active ? "Disabled" : "Enabled"}!`
         );
-        dispatch(fetchUsers());
+        dispatch(
+          fetchUsers({
+            offset: 0,
+            limit: 10,
+            sort: null,
+            filter: "",
+            search: "",
+          })
+        );
       }
     });
   };

@@ -33,7 +33,7 @@ const SignInForm = () => {
 
     dispatch(loginUser({ email, password })).then((result) => {
       if (result.payload) {
-        navigate("/users");
+        navigate("/");
       }
     });
   };

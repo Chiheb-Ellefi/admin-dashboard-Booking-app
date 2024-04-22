@@ -6,74 +6,51 @@ import { Plus, Filter, Search, X } from "lucide-react";
 import BounceLoader from "react-spinners/BounceLoader";
 import AddUserModal from "../components/Modal/AddUserModal";
 import folder from "../assets/folder.png";
-
+import Pagination from "../components/Pagination/PaginationBar";
 const Users = () => {
   const dispatch = useDispatch();
-  const { data, loading } = useSelector((state) => state.users);
+  const { count, data, loading } = useSelector((state) => state.users);
   const [filter, setFilter] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [search, setSearch] = useState("");
-  const [users, setUsers] = useState(data);
+  const [currentPage, setCurrentPage] = useState(1);
   const [addUser, setAddUser] = useState(false);
   const [selected, setSelected] = useState("all");
-  const filterData = () => {
-    if (selected == "all") {
-      setUsers(data);
-      return;
-    }
-    let filteredData = data;
-    if (selected == "active") {
-      filteredData = data.filter((user) => {
-        return user.active == true;
-      });
-    }
-    if (selected == "inactive") {
-      filteredData = data.filter((user) => {
-        return user.active == false;
-      });
-    }
-    if (selected == "admin") {
-      filteredData = data.filter((user) => {
-        return user.role == "admin";
-      });
-    }
-    if (selected == "simple") {
-      filteredData = data.filter((user) => {
-        return user.role == "simple";
-      });
-    }
-    setUsers(filteredData);
-  };
-  useEffect(() => {
-    filterData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, selected]);
+
   useEffect(() => {
     setIsSearch(search != "");
   }, [search]);
+
   useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
-  const handleSearch = () => {
-    if (!search) {
-      setUsers(data);
-      return;
+    const offset = (currentPage - 1) * 10;
+    let sort = null;
+    let filter = "";
+
+    if (selected == "all") {
+      filter = "";
+    }
+    if (selected == "active") {
+      filter = '{ "active": "true" }';
+    }
+    if (selected == "inactive") {
+      filter = '{ "active": "false" }';
+    }
+    if (selected == "admin") {
+      filter = '{ "role": "admin" }';
+    }
+    if (selected == "simple") {
+      filter = '{ "role": "simple" }';
     }
 
-    const filteredData = data.filter((user) => {
-      const searchTerm = search.toLowerCase();
-      return (
-        user.username.toLowerCase().includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm)
-      );
-    });
-    setUsers(filteredData);
-  };
-
-  useEffect(() => {
-    handleSearch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, data]);
+    dispatch(fetchUsers({ offset, limit: 10, sort, filter, search })).then(
+      (result) => {
+        if (result.payload) {
+          return result.payload.reservations;
+        }
+        return [];
+      }
+    );
+  }, [currentPage, search, dispatch, selected]);
 
   return (
     <section className="h-screen w-full flex flex-col items-center px-5 ">
@@ -195,8 +172,19 @@ const Users = () => {
               data-testid="loader"
             />
           </div>
-        ) : users.length > 0 ? (
-          <UsersList users={users} />
+        ) : data.length > 0 ? (
+          <>
+            <UsersList users={data} />
+            <div className="mb-4">
+              <Pagination
+                className="pagination-bar"
+                currentPage={currentPage}
+                totalCount={count - 1}
+                pageSize={10}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            </div>
+          </>
         ) : (
           <div className="w-full h-2/3 items-center flex flex-col gap-2">
             <img width={180} src={folder} alt="" />
